@@ -1,0 +1,45 @@
+:root {
+  --primary-color: #193046;
+}
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+ol,
+ul,
+dl {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 0 !important;
+}
+
+
+a {
+  text-decoration: none;
+  color: unset;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  background: #ffffff;
+  font-family: "primary-font";
+}
+
+@font-face {
+  font-family: "primary-font";
+  src: url(./fonts/Manrope-Regular.ttf);
+}
+
+@font-face {
+  font-family: "primary-font-thin";
+  src: url(./fonts/Manrope-Light.ttf);
+}
+
+@font-face {
+  font-family: "primary-font-bold";
+  src: url(./fonts/Manrope-Bold.ttf);
+}
