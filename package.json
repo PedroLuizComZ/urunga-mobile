@@ -24,7 +24,6 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.41.1",
-    "react-qr-reader": "^3.0.0-beta-1",
     "react-toastify": "^9.1.1",
     "reactstrap": "^9.1.5",
     "stripe": "^11.9.1",

@@ -1,5 +1,10 @@
 import Head from "next/head";
-import { ItemList, ListContainer, Categories } from "../styles/List";
+import {
+  ItemList,
+  ListContainer,
+  Categories,
+  CitySelector,
+} from "../styles/List";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -10,13 +15,14 @@ export default function Home() {
   const router = useRouter();
   const [restaurants, setRestaurants] = useState<IStores[]>([]);
   const [filterBy, setFilterBy] = useState("");
+  const [citySelected, setCitySelected] = useState("");
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [citySelected]);
 
   const loadData = async () => {
-    const result = await listStoresController();
+    const result = await listStoresController(citySelected);
     setRestaurants(result);
   };
 
@@ -33,7 +39,7 @@ export default function Home() {
       color: "orange",
       title: "Lanches",
       image: "hamburguer.svg",
-      api: "burguer",
+      api: "lanche",
     },
     {
       color: "blue",
@@ -43,15 +49,39 @@ export default function Home() {
     },
     {
       color: "purple",
-      title: "Bebidas",
+      title: "Barzinhos",
       image: "drink.png",
-      api: "drink",
+      api: "barzinho",
     },
     {
       color: "red",
-      title: "Carnes",
+      title: "Restaurante",
       image: "meat.svg",
-      api: "meat",
+      api: "restaurante",
+    },
+    {
+      color: "pink",
+      title: "Doces",
+      image: "candy.svg",
+      api: "doces",
+    },
+    {
+      color: "coral",
+      title: "Japonês",
+      image: "sushi.svg",
+      api: "japones",
+    },
+    {
+      color: "brown",
+      title: "Cafeteria",
+      image: "coffee.svg",
+      api: "cafeteria",
+    },
+    {
+      color: "green",
+      title: "Massas",
+      image: "pasta.svg",
+      api: "massas",
     },
   ];
 
@@ -71,6 +101,22 @@ export default function Home() {
           width={88}
           className="logo-icon"
         />
+        <CitySelector>
+          <select
+            name="cars"
+            id="cars"
+            value={citySelected}
+            onChange={(e) => setCitySelected(e.target.value)}
+          >
+            <option value="" disabled>
+              Escolha sua Cidade
+            </option>
+            <option value="jundiai">Jundiaí</option>
+            <option value="varzeapta">Várzea Paulista</option>
+            <option value="campolimpopta">Campo Limpo Paulista</option>
+          </select>
+        </CitySelector>
+
         <div className="search-bar">
           <Image
             src={"/icons/question-mark.svg"}
@@ -86,7 +132,6 @@ export default function Home() {
             onChange={(e) => setFilterBy(e.target.value)}
           />
         </div>
-
         <Categories>
           <h2>Categorias</h2>
           <div className="category-group">

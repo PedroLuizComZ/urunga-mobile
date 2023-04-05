@@ -13,6 +13,7 @@ import { IStores } from "../../interfaces/IStores";
 import { listStoreByIdController } from "../../controllers/Restaurants.controller";
 import QRCode from "qrcode";
 import { Modal, ModalBody } from "reactstrap";
+import Cookies from "js-cookie";
 
 export default function RestaurantDetail() {
   const router = useRouter();
@@ -35,7 +36,6 @@ export default function RestaurantDetail() {
   }, [router.isReady]);
 
   const loadData = async () => {
-    console.log(id);
     const result = await listStoreByIdController(`${id}`);
     setRestaurant(result);
     setLoading(false);
@@ -44,15 +44,29 @@ export default function RestaurantDetail() {
   const canvasRef = useRef<any>(null);
 
   const handleClickQrCode = () => {
-    if(!document.querySelector('input[name="radio"]:checked')) {
+    if (!document.querySelector('input[name="radio"]:checked')) {
       return alert("Selecione uma das promoções");
     }
     toggle();
 
+    const token = Cookies.get("token");
+
+    console.log(
+      `${
+        window.location.origin
+      }/validador?token=${token}&restaurantId=${id}&promotionId=${
+        document.querySelector('input[name="radio"]:checked')!.id
+      }`
+    );
+
     setTimeout(() => {
       QRCode.toCanvas(
         canvasRef.current,
-        `${id}-${document.querySelector('input[name="radio"]:checked')!.id}` || " ",
+        `${
+          window.location.origin
+        }/validador?token=${token}&restaurantId=${id}&promotionId=${
+          document.querySelector('input[name="radio"]:checked')!.id
+        }` || " ",
         (error) => error && console.error(error)
       );
     }, 500);

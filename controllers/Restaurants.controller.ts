@@ -5,8 +5,8 @@ import {
   listStoreByEmailService,
 } from "../services/Restaurants.service";
 
-export const listStoresController = async () => {
-  return await listStoresService();
+export const listStoresController = async (citySelected: string) => {
+  return await listStoresService(citySelected);
 };
 
 export const listStoreByIdController = async (storeId: string) => {

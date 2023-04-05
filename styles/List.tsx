@@ -76,6 +76,18 @@ export const Categories = styled.div`
     .red {
       background-color: #ff2d55;
     }
+    .coral {
+      background-color: #ff7f50;
+    }
+    .pink {
+      background-color: #ffb6c1;
+    }
+    .green {
+      background-color: #b6dc73;
+    }
+    .brown {
+      background-color: #523a28;
+    }
 
     .category-item {
       margin-right: 20px;
@@ -84,7 +96,11 @@ export const Categories = styled.div`
     .orange,
     .blue,
     .purple,
-    .red {
+    .red,
+    .coral,
+    .green,
+    .brown,
+    .pink {
       height: 90px;
       width: 90px;
       border-radius: 8px;
@@ -167,5 +183,19 @@ export const ItemList = styled.div`
         }
       }
     }
+  }
+`;
+
+export const CitySelector = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  select {
+    background: #ffffff;
+    border: 0;
+    border-radius: 10px;
+    height: 45px;
   }
 `;

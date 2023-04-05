@@ -1,35 +1,21 @@
-import Cookies from "js-cookie";
 import Head from "next/head";
-import { useEffect, useState } from "react";
-import { QrReader } from "react-qr-reader";
-import { listStoreByEmailController } from "../controllers/Restaurants.controller";
 import { ValidatorContainer } from "../styles/Validator";
 import { parseJwt } from "../utils/parseJwt";
 import Image from "next/image";
+import { useRouter } from "next/router";
+import { createCheckinController } from "../controllers/Checkin.controller";
 
 export default function Home() {
-  const [stores, setStores] = useState<any[]>([]);
+  const router = useRouter();
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    const JwtToken = Cookies.get("token");
-    const token = parseJwt(`${JwtToken}`);
-    const data = await listStoreByEmailController(`${token.data.email}`);
-
-    setStores([...data]);
-  };
-
-  const validateQrCode = (codeValue: string) => {
-    const storeExist = stores.findIndex(
-      (item) => item._id === codeValue.split("-")[0]
-    );
-
-    if (storeExist) {
-      alert("Cupom Valido");
-    }
+  const handleClick = async () => {
+    const tokenData = parseJwt(`${router.query.token}`);
+    await createCheckinController({
+      userId: tokenData.data._id,
+      storeId: `${router.query.restaurantId}`,
+      promotionId: `${router.query.promotionId}`,
+      checkinAt: `${new Date()}`,
+    });
   };
 
   return (
@@ -48,15 +34,12 @@ export default function Home() {
           width={88}
           className="logo-icon"
         />
-        <h1>Leitor de Cupom</h1>
-        <QrReader
-          onResult={(result: any, _error) => {
-            if (result && result.text) {
-              validateQrCode(result.text);
-            }
-          }}
-          constraints={{ facingMode: "user" }}
-        />
+        <h1>Validar </h1>
+        <p>Confirmar desconto</p>
+
+        <button type="button" onClick={handleClick}>
+          Confirmar
+        </button>
       </ValidatorContainer>
     </>
   );

@@ -1,8 +1,9 @@
 import { privateApi } from "./api";
 
-export const listStoresService = async () => {
+export const listStoresService = async (citySelected = "") => {
+  let city = citySelected !== "" ? `?city=${citySelected}` : "";
   return privateApi
-    .get("/store")
+    .get(`/store${city}`)
     .then(({ data }: any) => data)
     .catch((err: any) => {
       return err.response.data;
