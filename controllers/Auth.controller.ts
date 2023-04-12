@@ -31,6 +31,7 @@ export const signinController = async (signinDTO: ISigninDTO) => {
     Cookies.set("token", response.sessionToken);
     return {
       status: "success",
+      sessionToken :response.sessionToken
     };
   }
 };

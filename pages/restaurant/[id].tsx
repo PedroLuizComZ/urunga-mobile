@@ -14,11 +14,16 @@ import { listStoreByIdController } from "../../controllers/Restaurants.controlle
 import QRCode from "qrcode";
 import { Modal, ModalBody } from "reactstrap";
 import Cookies from "js-cookie";
+const stripe = require("stripe")(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY);
+import { parseJwt } from "../../utils/parseJwt";
 
 export default function RestaurantDetail() {
   const router = useRouter();
   const { id } = router.query;
   const [modal, setModal] = useState(false);
+  const [hasValidSubscription, setHasValidSubscription] = useState(false);
+
+  const token = Cookies.get("token");
 
   const toggle = () => setModal(!modal);
 
@@ -32,6 +37,7 @@ export default function RestaurantDetail() {
   useEffect(() => {
     if (router.isReady) {
       loadData();
+      checkSubscription();
     }
   }, [router.isReady]);
 
@@ -41,15 +47,46 @@ export default function RestaurantDetail() {
     setLoading(false);
   };
 
+  const checkSubscription = async () => {
+    const sessionData = JSON.parse(`${Cookies.get("sessionData")}`);
+
+    if (sessionData && sessionData.status === "complete") {
+      setHasValidSubscription(true);
+    }
+  };
+
+  const createSubscription = async () => {
+
+    const parsedToken = parseJwt(`${token}`);
+
+    try {
+      const session = await stripe.checkout.sessions.create({
+        success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/success`,
+        customer_email: parsedToken.data.email,
+        line_items: [
+          {
+            price: process.env.NEXT_PUBLIC_STRIPE_SUBSCRIPTION_ID,
+            quantity: 1,
+          },
+        ],
+        mode: "subscription",
+      });
+
+      window.location.href = session.url;
+    } catch (error) {
+      alert("Ocorreu um erro, tente novamente mais tarde");
+    }
+  };
+
   const canvasRef = useRef<any>(null);
 
-  const handleClickQrCode = () => {
+  const handleClickQrCode = async () => {
+    const token = Cookies.get("token");
+
     if (!document.querySelector('input[name="radio"]:checked')) {
       return alert("Selecione uma das promoções");
     }
     toggle();
-
-    const token = Cookies.get("token");
 
     console.log(
       `${
@@ -150,7 +187,11 @@ export default function RestaurantDetail() {
             )}
           </InformationContainer>
           <QrCodeContainer>
-            <button onClick={handleClickQrCode}>Gerar Cupom</button>
+            {hasValidSubscription ? (
+              <button onClick={handleClickQrCode}>Gerar Cupom</button>
+            ) : (
+              <button onClick={createSubscription}>Assinar</button>
+            )}
           </QrCodeContainer>
           <Modal isOpen={modal} toggle={toggle} centered>
             <ModalBody>

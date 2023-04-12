@@ -6,6 +6,9 @@ import { useForm } from "react-hook-form";
 import { ISigninDTO } from "../interfaces/ISigninDTO";
 import { signinController } from "../controllers/Auth.controller";
 import { useRouter } from "next/router";
+import { parseJwt } from "../utils/parseJwt";
+import Cookies from "js-cookie";
+const stripe = require("stripe")(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY);
 
 export default function Login() {
   const {
@@ -21,7 +24,18 @@ export default function Login() {
     const result = await signinController(user);
 
     if (result.status === "success") {
-      router.push(`/list/`);
+      const parsedToken = parseJwt(`${result.sessionToken}`);
+
+      try {
+        const session = await stripe.checkout.sessions.retrieve(
+          parsedToken.data.checkoutSessionId
+        );
+
+        Cookies.set("sessionData", JSON.stringify(session));
+      } catch (error) {
+        console.log(error);
+      }
+      router.push(`/list`);
     }
   };
 
