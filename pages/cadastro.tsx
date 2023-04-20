@@ -8,7 +8,15 @@ import { IUser } from "../interfaces/IUser";
 import { useRouter } from "next/router";
 
 export default function Signup() {
-  const citys = ["Jundiai", "Varzea", "Louveira", "Outro"];
+  const citys = [
+    "Cabreúva",
+    "Campo Limpo Paulista",
+    "Jarinu",
+    "Jundiai",
+    "Várzea Paulista",
+    "Louveira",
+    "Outro",
+  ];
 
   const {
     register,
@@ -16,15 +24,15 @@ export default function Signup() {
     formState: { errors },
   } = useForm();
 
-  const router = useRouter()
+  const router = useRouter();
 
-  const onSubmit = async (data: any) => {   
+  const onSubmit = async (data: any) => {
     const user: IUser = data;
     user.type = "client";
     const result = await createUserController(user);
 
-    if(result.status === "success"){
-      router.push(`/list/`)
+    if (result.status === "success") {
+      router.push(`/list/`);
     }
   };
 
@@ -88,6 +96,10 @@ export default function Signup() {
             </select>
             {errors.city && <p role="alert">{`${errors.city?.message}`}</p>}
           </div>
+          <small>
+            Ao criar a conta você esta aceitando nossos{" "}
+            <Link href="/termos-de-uso"> termos de uso </Link>{" "}
+          </small>
           <button type="submit">Cadastrar</button>
         </form>
 

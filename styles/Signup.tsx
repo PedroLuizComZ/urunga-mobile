@@ -15,6 +15,11 @@ export const SignupContainer = styled.div`
     object-fit: contain;
   }
 
+  small {
+    margin-bottom: 20px;
+    display: block;
+  }
+
   h1 {
     font-style: normal;
     font-weight: 600;
