@@ -48,7 +48,8 @@ export default function RestaurantDetail() {
   };
 
   const checkSubscription = async () => {
-    const sessionData = JSON.parse(`${Cookies.get("sessionData")}`);
+    let sessionData : any= Cookies.get("sessionData")  
+    sessionData = sessionData ? JSON.parse(`${sessionData}`) : {};
 
     if (sessionData && sessionData.status === "complete") {
       setHasValidSubscription(true);
