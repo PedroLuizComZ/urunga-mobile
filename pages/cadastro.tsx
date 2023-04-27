@@ -11,6 +11,7 @@ export default function Signup() {
   const citys = [
     "Cabreúva",
     "Campo Limpo Paulista",
+    "Itupeva",
     "Jarinu",
     "Jundiai",
     "Várzea Paulista",
