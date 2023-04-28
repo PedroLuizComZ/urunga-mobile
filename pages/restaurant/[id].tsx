@@ -48,7 +48,7 @@ export default function RestaurantDetail() {
   };
 
   const checkSubscription = async () => {
-    let sessionData : any= Cookies.get("sessionData")  
+    let sessionData: any = Cookies.get("sessionData");
     sessionData = sessionData ? JSON.parse(`${sessionData}`) : {};
 
     if (sessionData && sessionData.status === "complete") {
@@ -56,8 +56,9 @@ export default function RestaurantDetail() {
     }
   };
 
-  const createSubscription = async () => {
+  console.log(restaurant);
 
+  const createSubscription = async () => {
     const parsedToken = parseJwt(`${token}`);
 
     try {
@@ -110,6 +111,14 @@ export default function RestaurantDetail() {
     }, 500);
   };
 
+  const handleGoogleClick = () => {
+    window.open(restaurant?.google);
+  };
+
+  const handleInstagramClick = () => {
+    window.open(`https://www.instagram.com/${restaurant?.instagram}`);
+  };
+
   return (
     <>
       <Head>
@@ -158,6 +167,30 @@ export default function RestaurantDetail() {
                     />
                     <label>4.8</label>
                     <small>(233 avaliações)</small>
+                  </div>
+                  <div className="social-media-container">
+                    {restaurant &&
+                      restaurant.google &&
+                      restaurant.google !== "" && (
+                      <Image
+                        src={"/icons/googleIcon.svg"}
+                        alt={"RatingStar"}
+                        height={30}
+                        width={30}
+                        onClick={handleGoogleClick}
+                      />
+                    )}
+                    {restaurant &&
+                      restaurant.instagram &&
+                      restaurant.instagram !== "" && (
+                        <Image
+                          src={"/icons/instagram.svg"}
+                          alt={"RatingStar"}
+                          height={30}
+                          width={30}
+                          onClick={handleInstagramClick}
+                        />
+                      )}
                   </div>
                 </div>
               </li>

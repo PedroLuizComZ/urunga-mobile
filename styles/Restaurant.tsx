@@ -109,6 +109,14 @@ export const ItemList = styled.div`
           color: #b8bbc6;
         }
       }
+
+      .social-media-container{
+      img {
+        margin: 10px;
+        padding: 2px;
+        cursor: pointer;
+      }
+    }
     }
   }
 `;
