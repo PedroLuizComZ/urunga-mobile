@@ -184,6 +184,13 @@ export const ItemList = styled.div`
       }
     }
   }
+
+  .loaderContainer {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 `;
 
 export const CitySelector = styled.div`

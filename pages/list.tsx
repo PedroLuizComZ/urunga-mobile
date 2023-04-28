@@ -10,11 +10,13 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { listStoresController } from "../controllers/Restaurants.controller";
 import { IStores } from "../interfaces/IStores";
+import Loader from "../components/Loader";
 
 export default function Home() {
   const router = useRouter();
   const [restaurants, setRestaurants] = useState<IStores[]>([]);
   const [filterBy, setFilterBy] = useState("");
+  const [loading, setLoading] = useState(true);
   const [citySelected, setCitySelected] = useState("");
 
   useEffect(() => {
@@ -24,6 +26,7 @@ export default function Home() {
   const loadData = async () => {
     const result = await listStoresController(citySelected);
     setRestaurants(result);
+    setLoading(false);
   };
 
   const handleClick = (id: string) => {
@@ -159,43 +162,51 @@ export default function Home() {
 
         <ItemList>
           <h2>Restaurantes</h2>
-          <ul>
-            {restaurants
-              .filter((item) =>
+          {loading ? (
+            <div className="loaderContainer">
+              <Loader />
+            </div>
+          ) : (
+            <>
+              <ul>
+                {restaurants
+                  .filter((item) =>
+                    item.name.toLowerCase().includes(filterBy.toLowerCase())
+                  )
+                  .map((item) => {
+                    return (
+                      <li key={item._id} onClick={() => handleClick(item._id)}>
+                        <div className="image-holder">
+                          <Image
+                            src={item.logo}
+                            alt={"RatingStar"}
+                            height={88}
+                            width={88}
+                          />
+                        </div>
+                        <div className="info-box">
+                          <p>{item.name}</p>
+                          <span>{item.description}</span>
+                          <div className="ratings">
+                            <Image
+                              src={"/icons/start.svg"}
+                              alt={"RatingStar"}
+                              height={10}
+                              width={10}
+                            />
+                            <label>4.8</label>
+                            <small>(5 ratings)</small>
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+              </ul>
+              {restaurants.filter((item) =>
                 item.name.toLowerCase().includes(filterBy.toLowerCase())
-              )
-              .map((item) => {
-                return (
-                  <li key={item._id} onClick={() => handleClick(item._id)}>
-                    <div className="image-holder">
-                      <Image
-                        src={item.logo}
-                        alt={"RatingStar"}
-                        height={88}
-                        width={88}
-                      />
-                    </div>
-                    <div className="info-box">
-                      <p>{item.name}</p>
-                      <span>{item.description}</span>
-                      <div className="ratings">
-                        <Image
-                          src={"/icons/start.svg"}
-                          alt={"RatingStar"}
-                          height={10}
-                          width={10}
-                        />
-                        <label>4.8</label>
-                        <small>(5 ratings)</small>
-                      </div>
-                    </div>
-                  </li>
-                );
-              })}
-          </ul>
-          {restaurants.filter((item) =>
-            item.name.toLowerCase().includes(filterBy.toLowerCase())
-          ).length === 0 && <p>Nenhum Restaurante encontrado</p>}
+              ).length === 0 && <p>Nenhum Restaurante encontrado</p>}
+            </>
+          )}
         </ItemList>
       </ListContainer>
     </>
