@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { ToastContainer } from "react-toastify";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
+import Footer from "../components/footer";
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter()
@@ -23,6 +24,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Component {...pageProps} />
+      <Footer/>
       <ToastContainer />
     </>
   );

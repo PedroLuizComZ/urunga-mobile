@@ -82,6 +82,16 @@ export default function Signup() {
             )}
           </div>
           <div className="input-group">
+            <span>Data de nascimento</span>
+            <input
+              type="date"
+              {...register("birthdate", { required: "Data de nascimento é Obrigatório" })}
+            />
+            {errors.password && (
+              <p role="alert">{`${errors.password?.message}`}</p>
+            )}
+          </div>
+          <div className="input-group">
             <span>Escolha a sua Cidade</span>
             <select
               id="citys"
@@ -94,6 +104,18 @@ export default function Signup() {
                   </option>
                 );
               })}
+            </select>
+            {errors.city && <p role="alert">{`${errors.city?.message}`}</p>}
+          </div>
+          <div className="input-group">
+            <span>Gênero</span>
+            <select
+              id="citys"
+              {...register("gender", { required: "Sexo é Obrigatório" })}
+            >
+              <option value={"masculino"}>Masculino</option>
+              <option value={"feminino"}>Feminino</option>
+              <option value={"outro"}>Outro</option>
             </select>
             {errors.city && <p role="alert">{`${errors.city?.message}`}</p>}
           </div>

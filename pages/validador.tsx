@@ -9,13 +9,26 @@ export default function Home() {
   const router = useRouter();
 
   const handleClick = async () => {
-    const tokenData = parseJwt(`${router.query.token}`);
-    await createCheckinController({
-      userId: tokenData.data._id,
-      storeId: `${router.query.restaurantId}`,
-      promotionId: `${router.query.promotionId}`,
-      checkinAt: `${new Date()}`,
-    });
+    const now = new Date().getTime();
+    const qrcodeDate = router.query.date;
+
+    if (now - Number(qrcodeDate) <= 3600000) {
+      const tokenData = parseJwt(`${router.query.token}`);
+      const response = await createCheckinController({
+        userId: tokenData.data._id,
+        storeId: `${router.query.restaurantId}`,
+        promotionId: `${router.query.promotionId}`,
+        checkinAt: `${new Date()}`,
+      });
+
+      if (!response.error) {
+        alert("Cupom validado com sucesso!");
+      } else {
+        alert("Ocorreu um erro ao validar o cupom, tente novamente mais tarde");
+      }
+    } else {
+      alert("Cupom Expirado!");
+    }
   };
 
   return (

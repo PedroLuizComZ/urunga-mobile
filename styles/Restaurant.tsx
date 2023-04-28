@@ -148,7 +148,6 @@ export const InformationContainer = styled.div`
 
 export const QrCodeContainer = styled.div`
   width: 100vw;
-  position: fixed;
   bottom: 0;
   padding: 15px;
   button {

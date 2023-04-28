@@ -92,7 +92,7 @@ export default function RestaurantDetail() {
     console.log(
       `${
         window.location.origin
-      }/validador?token=${token}&restaurantId=${id}&promotionId=${
+      }/validador?token=${token}&date=${new Date().getTime()}&restaurantId=${id}&promotionId=${
         document.querySelector('input[name="radio"]:checked')!.id
       }`
     );
@@ -102,7 +102,7 @@ export default function RestaurantDetail() {
         canvasRef.current,
         `${
           window.location.origin
-        }/validador?token=${token}&restaurantId=${id}&promotionId=${
+        }/validador?token=${token}&date=${new Date().getTime()}&restaurantId=${id}&promotionId=${
           document.querySelector('input[name="radio"]:checked')!.id
         }` || " ",
         (error) => error && console.error(error)
@@ -157,7 +157,7 @@ export default function RestaurantDetail() {
                       width={10}
                     />
                     <label>4.8</label>
-                    <small>(233 ratings)</small>
+                    <small>(233 avaliações)</small>
                   </div>
                 </div>
               </li>
