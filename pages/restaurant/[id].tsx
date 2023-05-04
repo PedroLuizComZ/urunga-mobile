@@ -3,6 +3,7 @@ import {
   InformationContainer,
   ItemList,
   ModalContainer,
+  ModalReviewContainer,
   QrCodeContainer,
   RestaurantContainer,
 } from "../../styles/Restaurant";
@@ -10,22 +11,36 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { IStores } from "../../interfaces/IStores";
-import { listStoreByIdController } from "../../controllers/Restaurants.controller";
+import {
+  createRatingController,
+  listStoreByIdController,
+} from "../../controllers/Restaurants.controller";
 import QRCode from "qrcode";
 import { Modal, ModalBody } from "reactstrap";
 import Cookies from "js-cookie";
 const stripe = require("stripe")(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY);
 import { parseJwt } from "../../utils/parseJwt";
+import { getCheckinByIdController } from "../../controllers/Checkin.controller";
+
+import StarImage from "../../public/images/star.png";
+import StarFullImage from "../../public/images/star-full.png";
+import { calcRating } from "../../utils/calcRating";
 
 export default function RestaurantDetail() {
   const router = useRouter();
   const { id } = router.query;
   const [modal, setModal] = useState(false);
+  const [startModal, setStartModal] = useState(false);
   const [hasValidSubscription, setHasValidSubscription] = useState(false);
+
+  const canvasRef = useRef<any>(null);
+  const textareaRef = useRef<any>(null);
 
   const token = Cookies.get("token");
 
   const toggle = () => setModal(!modal);
+
+  const toggleStar = () => setStartModal(!startModal);
 
   const handleClick = () => {
     router.push(`/list`);
@@ -33,6 +48,8 @@ export default function RestaurantDetail() {
 
   const [restaurant, setRestaurant] = useState<IStores | null>(null);
   const [loading, setLoading] = useState(true);
+  const [enableChecking, setEnableChecking] = useState(false);
+  const [reviewValue, setReviewValue] = useState(5);
 
   useEffect(() => {
     if (router.isReady) {
@@ -43,8 +60,21 @@ export default function RestaurantDetail() {
 
   const loadData = async () => {
     const result = await listStoreByIdController(`${id}`);
+    await handleCheckin();
     setRestaurant(result);
     setLoading(false);
+  };
+
+  const handleCheckin = async () => {
+    const parsedToken = parseJwt(`${token}`);
+    const checkins = await getCheckinByIdController(
+      `${parsedToken.data._id}`,
+      `${id}`
+    );
+
+    if (checkins.status === "success") {
+      setEnableChecking(true);
+    }
   };
 
   const checkSubscription = async () => {
@@ -56,7 +86,19 @@ export default function RestaurantDetail() {
     }
   };
 
-  console.log(restaurant);
+  const handleRating = async () => {
+    const parsedToken = parseJwt(`${token}`);
+
+    const payload = {
+      userId: parsedToken.data._id,
+      commentary: textareaRef.current.value,
+      ratingValue: reviewValue,
+    };
+
+    const result = await createRatingController(`${id}`, payload);
+
+    console.log(result);
+  };
 
   const createSubscription = async () => {
     const parsedToken = parseJwt(`${token}`);
@@ -80,9 +122,12 @@ export default function RestaurantDetail() {
     }
   };
 
-  const canvasRef = useRef<any>(null);
-
   const handleClickQrCode = async () => {
+    if (!enableChecking) {
+      return alert(
+        "Você já resgatou a promoção da semana nesse restaurante, tente novamente em alguns dias."
+      );
+    }
     const token = Cookies.get("token");
 
     if (!document.querySelector('input[name="radio"]:checked')) {
@@ -158,28 +203,28 @@ export default function RestaurantDetail() {
                 <div className="info-box">
                   <p>{restaurant!.name}</p>
                   <span>Beyti Restaurant, Taksim</span>
-                  <div className="ratings">
+                  <div className="ratings" onClick={toggleStar}>
                     <Image
                       src={"/icons/start.svg"}
                       alt={"RatingStar"}
                       height={10}
                       width={10}
                     />
-                    <label>4.8</label>
-                    <small>(233 avaliações)</small>
+                    <label>{restaurant && calcRating(restaurant)}</label>
+                    <small>({restaurant?.rating.length} avaliações)</small>
                   </div>
                   <div className="social-media-container">
                     {restaurant &&
                       restaurant.google &&
                       restaurant.google !== "" && (
-                      <Image
-                        src={"/icons/googleIcon.svg"}
-                        alt={"RatingStar"}
-                        height={30}
-                        width={30}
-                        onClick={handleGoogleClick}
-                      />
-                    )}
+                        <Image
+                          src={"/icons/googleIcon.svg"}
+                          alt={"RatingStar"}
+                          height={30}
+                          width={30}
+                          onClick={handleGoogleClick}
+                        />
+                      )}
                     {restaurant &&
                       restaurant.instagram &&
                       restaurant.instagram !== "" && (
@@ -232,6 +277,68 @@ export default function RestaurantDetail() {
               <ModalContainer>
                 <canvas ref={canvasRef} />
               </ModalContainer>
+            </ModalBody>
+          </Modal>
+
+          <Modal isOpen={startModal} toggle={toggleStar} centered>
+            <ModalBody>
+              <ModalReviewContainer>
+                <h1>Avalie o restaurante</h1>
+                <div>
+                  <Image
+                    src={reviewValue < 1 ? StarImage : StarFullImage}
+                    alt="user image"
+                    width={30}
+                    height={30}
+                    onClick={() =>
+                      reviewValue === 0 ? setReviewValue(1) : setReviewValue(0)
+                    }
+                  />
+                  <Image
+                    src={reviewValue < 2 ? StarImage : StarFullImage}
+                    alt="user image"
+                    width={30}
+                    height={30}
+                    onClick={() =>
+                      reviewValue < 2 ? setReviewValue(2) : setReviewValue(1)
+                    }
+                  />
+                  <Image
+                    src={reviewValue < 3 ? StarImage : StarFullImage}
+                    alt="user image"
+                    width={30}
+                    height={30}
+                    onClick={() =>
+                      reviewValue < 3 ? setReviewValue(3) : setReviewValue(2)
+                    }
+                  />
+                  <Image
+                    src={reviewValue < 4 ? StarImage : StarFullImage}
+                    alt="user image"
+                    width={30}
+                    height={30}
+                    onClick={() =>
+                      reviewValue < 4 ? setReviewValue(4) : setReviewValue(3)
+                    }
+                  />
+                  <Image
+                    src={reviewValue < 5 ? StarImage : StarFullImage}
+                    alt="user image"
+                    width={30}
+                    height={30}
+                    onClick={() =>
+                      reviewValue < 5 ? setReviewValue(5) : setReviewValue(4)
+                    }
+                  />
+                </div>
+                <textarea
+                  rows={5}
+                  placeholder={"Deixe um Comentario..."}
+                  ref={textareaRef}
+                />
+                <button onClick={handleRating}>Confirmar</button>
+                <span onClick={toggleStar}>Cancelar</span>
+              </ModalReviewContainer>
             </ModalBody>
           </Modal>
         </RestaurantContainer>

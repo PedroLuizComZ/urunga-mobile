@@ -9,3 +9,13 @@ export const createCheckinService = async (checkinData: ICheckin) => {
       return err.response.data;
     });
 };
+
+
+export const getCheckinByIdService = async (userId: string, storeId : string) => {
+  return publicApi
+    .get(`/checkin/${userId}?storeId=${storeId}`)
+    .then(({ data }: any) => data)
+    .catch((err: any) => {
+      return err.response.data;
+    });
+};

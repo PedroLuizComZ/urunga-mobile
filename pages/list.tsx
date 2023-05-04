@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { listStoresController } from "../controllers/Restaurants.controller";
 import { IStores } from "../interfaces/IStores";
 import Loader from "../components/Loader";
+import { calcRating } from "../utils/calcRating";
 
 export default function Home() {
   const router = useRouter();
@@ -194,8 +195,8 @@ export default function Home() {
                               height={10}
                               width={10}
                             />
-                            <label>4.8</label>
-                            <small>(5 ratings)</small>
+                            <label>{calcRating(item)}</label>
+                            <small>({item.rating.length} avaliações)</small>
                           </div>
                         </div>
                       </li>

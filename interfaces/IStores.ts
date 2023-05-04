@@ -7,4 +7,11 @@ export interface IStores {
   description: string;
   email: string;
   promotions: string[];
+  rating: IRating[];
+}
+
+export interface IRating {
+  userId: String;
+  commentary: String;
+  ratingValue: number;
 }

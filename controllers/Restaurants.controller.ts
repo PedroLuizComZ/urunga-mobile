@@ -1,8 +1,10 @@
+import { IRating } from "../interfaces/IStores";
 import {
   listStoreByIdService,
   listStoresService,
   listStoreByCategoryService,
   listStoreByEmailService,
+  createRatingService,
 } from "../services/Restaurants.service";
 
 export const listStoresController = async (citySelected: string) => {
@@ -21,3 +23,9 @@ export const listStoreByEmailController = async (email: string) => {
   return await listStoreByEmailService(email);
 };
 
+export const createRatingController = async (
+  storeId: string,
+  payload: IRating
+) => {
+  return await createRatingService(storeId, payload);
+};

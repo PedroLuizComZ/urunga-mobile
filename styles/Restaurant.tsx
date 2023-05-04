@@ -110,13 +110,13 @@ export const ItemList = styled.div`
         }
       }
 
-      .social-media-container{
-      img {
-        margin: 10px;
-        padding: 2px;
-        cursor: pointer;
+      .social-media-container {
+        img {
+          margin: 10px;
+          padding: 2px;
+          cursor: pointer;
+        }
       }
-    }
     }
   }
 `;
@@ -186,4 +186,64 @@ export const ModalContainer = styled.div`
     width: 100% !important;
     height: 100% !important;
   }
-`
+`;
+
+export const ModalReviewContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+
+  h1 {
+    font-weight: 600;
+    font-size: 27.65px;
+    line-height: 100%;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #000000;
+    margin: 25px 0;
+  }
+
+  img {
+    cursor: pointer;
+  }
+
+  textarea {
+    resize: none;
+    width: 90%;
+    margin: 25px 0;
+    height: 200px;
+    font-weight: 500;
+    font-size: 19.2px;
+    line-height: 100%;
+    padding: 11px;
+  }
+
+  button {
+    background: var(--primary-color);
+    border-radius: 10px;
+    width: 100%;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 17px;
+    line-height: 23px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #ffffff;
+    border: 0;
+    justify-content: center;
+    height: 50px;
+    cursor: pointer;
+    margin-bottom: 30px;
+  }
+
+  span {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 17px;
+    color: #000000;
+  }
+`;
