@@ -125,7 +125,7 @@ export default function RestaurantDetail() {
   const handleClickQrCode = async () => {
     if (!enableChecking) {
       return alert(
-        "Você já resgatou a promoção da semana nesse restaurante, tente novamente em alguns dias."
+        "QR Code utilizado essa semana, aguarde 7 dias após o uso"
       );
     }
     const token = Cookies.get("token");
