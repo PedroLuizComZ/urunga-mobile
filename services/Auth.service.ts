@@ -21,3 +21,12 @@ export const signinService = async (user: ISigninDTO) => {
     });
 };
 
+export const getUserProfileService = async (userId : string) => {
+  return publicApi
+    .get(`/user/${userId}`, )
+    .then(({ data }: any) => data)
+    .catch((err: any) => {
+      return err.response.data;
+    });
+};
+

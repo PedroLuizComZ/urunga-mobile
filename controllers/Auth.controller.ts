@@ -1,6 +1,6 @@
 import { ISigninDTO } from "../interfaces/ISigninDTO";
 import { IUser } from "../interfaces/IUser";
-import { createUserService, signinService } from "../services/Auth.service";
+import { createUserService, getUserProfileService, signinService } from "../services/Auth.service";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 
@@ -35,3 +35,8 @@ export const signinController = async (signinDTO: ISigninDTO) => {
     };
   }
 };
+
+export const getUserProfileController = async (userId: string) => {
+  return  await getUserProfileService(userId);
+};
+

@@ -25,6 +25,7 @@ import { getCheckinByIdController } from "../../controllers/Checkin.controller";
 import StarImage from "../../public/images/star.png";
 import StarFullImage from "../../public/images/star-full.png";
 import { calcRating } from "../../utils/calcRating";
+import { getUserProfileController } from "../../controllers/Auth.controller";
 
 export default function RestaurantDetail() {
   const router = useRouter();
@@ -78,11 +79,22 @@ export default function RestaurantDetail() {
   };
 
   const checkSubscription = async () => {
-    let sessionData: any = Cookies.get("sessionData");
-    sessionData = sessionData ? JSON.parse(`${sessionData}`) : {};
+    let jwtToken: any = Cookies.get("token");
 
-    if (sessionData && sessionData.status === "complete") {
-      setHasValidSubscription(true);
+    const parsedJwt = await parseJwt(jwtToken);
+
+    const userProfile = await getUserProfileController(parsedJwt.data._id);
+
+    try {
+      const session = await stripe.checkout.sessions.retrieve(
+        userProfile?.checkoutSessionId
+      );
+
+      if (session && session.status === "complete") {
+        setHasValidSubscription(true);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -124,9 +136,7 @@ export default function RestaurantDetail() {
 
   const handleClickQrCode = async () => {
     if (!enableChecking) {
-      return alert(
-        "QR Code utilizado essa semana, aguarde 7 dias após o uso"
-      );
+      return alert("QR Code utilizado essa semana, aguarde 7 dias após o uso");
     }
     const token = Cookies.get("token");
 
