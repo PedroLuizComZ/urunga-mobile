@@ -4,9 +4,30 @@ import { parseJwt } from "../utils/parseJwt";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { createCheckinController } from "../controllers/Checkin.controller";
+import { useEffect, useState } from "react";
+import { listStoreByIdController } from "../controllers/Restaurants.controller";
+import { IStores } from "../interfaces/IStores";
+import Loader from "../components/Loader";
 
 export default function Home() {
   const router = useRouter();
+
+  const [restaurant, setRestaurant] = useState<IStores | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (router.isReady) {
+      loadData();
+    }
+  }, [router.isReady]);
+
+  const loadData = async () => {
+    const result = await listStoreByIdController(
+      `${router.query.restaurantId}`
+    );
+    setRestaurant(result);
+    setLoading(false);
+  };
 
   const handleClick = async () => {
     const now = new Date().getTime();
@@ -42,17 +63,25 @@ export default function Home() {
       <ValidatorContainer>
         <Image
           src={"/logo.svg"}
-          alt={"RatingStar"}
+          alt={"logo"}
           height={88}
           width={88}
           className="logo-icon"
         />
-        <h1>Validar </h1>
-        <p>Confirmar desconto</p>
-
-        <button type="button" onClick={handleClick}>
-          Confirmar
-        </button>
+        {loading ? (
+          <div className="loaderContainer">
+            <Loader />
+          </div>
+        ) : (
+          <>
+            <h1>Validar </h1>
+            <p>Confirmar desconto</p>
+            <p>{restaurant?.promotions[Number(router.query.promotionId)]}</p>
+            <button type="button" onClick={handleClick}>
+              Confirmar
+            </button>
+          </>
+        )}
       </ValidatorContainer>
     </>
   );

@@ -7,6 +7,14 @@ export const ValidatorContainer = styled.div`
   min-height: 100vh;
   margin: auto;
   padding: 15px;
+
+  .loaderContainer {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .logo-icon {
     width: 100%;
     object-fit: contain;
