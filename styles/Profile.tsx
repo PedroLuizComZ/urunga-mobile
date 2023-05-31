@@ -62,6 +62,40 @@ export const ProfileContainer = styled.div`
     height: 50px;
     cursor: pointer;
   }
+
+  p {
+    cursor: pointer;
+    margin-bottom: 55px;
+    margin-top: 20px;
+  }
 `;
 
+export const ModalContainer = styled.div`
+  h2 {
+    text-align: center;
+    margin-bottom: 15px;
+  }
 
+  .delete {
+    background: #d24d57;
+    margin-bottom: 20px;
+  }
+
+  button {
+    background: var(--primary-color);
+    border-radius: 10px;
+    width: 100%;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 17px;
+    line-height: 23px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #ffffff;
+    border: 0;
+    justify-content: center;
+    height: 50px;
+    cursor: pointer;
+  }
+`;

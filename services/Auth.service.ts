@@ -30,3 +30,12 @@ export const getUserProfileService = async (userId : string) => {
     });
 };
 
+
+export const deleteAccountService = async (userId: string) => {
+  return publicApi
+    .delete(`/user/${userId}`)
+    .then(({ data }: any) => data)
+    .catch((err: any) => {
+      return err.response.data;
+    });
+};

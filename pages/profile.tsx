@@ -1,17 +1,31 @@
 import Head from "next/head";
-import { ProfileContainer } from "../styles/Profile";
+import { ModalContainer, ProfileContainer } from "../styles/Profile";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
+import { Modal, ModalBody } from "reactstrap";
+import { useState } from "react";
+import { parseJwt } from "../utils/parseJwt";
+import { deleteAccountController } from "../controllers/Auth.controller";
 
 export default function Home() {
   const router = useRouter();
+
+  const [modal, setModal] = useState(false);
+  const toggle = () => setModal(!modal);
 
   const handleLogout = () => {
     Cookies.remove("token");
     setTimeout(() => {
       router.push("/");
     }, 300);
+  };
+
+  const handleDeleteAccount = async () => {
+    const token = Cookies.get("token");
+    const parsedToken = parseJwt(`${token}`);
+    await deleteAccountController(`${parsedToken.data._id}`);
+    handleLogout();
   };
 
   return (
@@ -32,10 +46,31 @@ export default function Home() {
         />
         <h2>Perfil</h2>
 
+        <p onClick={toggle}>Excluir conta</p>
+
         <button type="button" onClick={handleLogout}>
           Sair
         </button>
       </ProfileContainer>
+      <Modal isOpen={modal} toggle={toggle} centered>
+        <ModalBody>
+          <ModalContainer>
+            <h2>Tem certeza de que deseja excluir sua conta?</h2>
+
+            <button
+              type="button"
+              className="delete"
+              onClick={handleDeleteAccount}
+            >
+              Sim, Excluir
+            </button>
+
+            <button type="button" onClick={toggle}>
+              Não, voltar
+            </button>
+          </ModalContainer>
+        </ModalBody>
+      </Modal>
     </>
   );
 }

@@ -30,6 +30,9 @@ export default function Signup() {
   const onSubmit = async (data: any) => {
     const user: IUser = data;
     user.type = "client";
+    if(user.birthdate === "") {
+      delete user.birthdate;
+    }
     const result = await createUserController(user);
 
     if (result.status === "success") {
@@ -82,10 +85,10 @@ export default function Signup() {
             )}
           </div>
           <div className="input-group">
-            <span>Data de nascimento</span>
+            <span>Data de nascimento (Opcional)</span>
             <input
               type="date"
-              {...register("birthdate", { required: "Data de nascimento é Obrigatório" })}
+              {...register("birthdate")}
             />
             {errors.password && (
               <p role="alert">{`${errors.password?.message}`}</p>
