@@ -26,7 +26,6 @@ import StarImage from "../../public/images/star.png";
 import StarFullImage from "../../public/images/star-full.png";
 import { calcRating } from "../../utils/calcRating";
 import { getUserProfileController } from "../../controllers/Auth.controller";
-import BuyButtonComponent from "../../components/BuyButtonComponent";
 
 export default function RestaurantDetail() {
   const router = useRouter();
@@ -280,11 +279,7 @@ export default function RestaurantDetail() {
             {hasValidSubscription ? (
               <button onClick={handleClickQrCode}>Gerar Cupom</button>
             ) : (
-              <>
-          <BuyButtonComponent />
-          <button onClick={createSubscription}>Assinar</button>
-              
-              </>
+              <button onClick={createSubscription}>Assinar</button>
             )}
           </QrCodeContainer>
           <Modal isOpen={modal} toggle={toggle} centered>
