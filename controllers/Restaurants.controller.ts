@@ -15,8 +15,8 @@ export const listStoreByIdController = async (storeId: string) => {
   return await listStoreByIdService(storeId);
 };
 
-export const listStoreByCategoryController = async (category: string) => {
-  return await listStoreByCategoryService(category);
+export const listStoreByCategoryController = async (category: string, citySelected : string) => {
+  return await listStoreByCategoryService(category, citySelected);
 };
 
 export const listStoreByEmailController = async (email: string) => {

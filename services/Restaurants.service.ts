@@ -20,9 +20,10 @@ export const listStoreByIdService = async (storeId: string) => {
     });
 };
 
-export const listStoreByCategoryService = async (category: string) => {
+export const listStoreByCategoryService = async (category: string, citySelected : string) => {
+  let city = citySelected !== "" ? `?city=${citySelected}` : "";
   return privateApi
-    .get(`/store/list-by-category/${category}`)
+    .get(`/store/list-by-category/${category}${city}`)
     .then(({ data }: any) => data)
     .catch((err: any) => {
       return err.response.data;

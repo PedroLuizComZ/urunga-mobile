@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { ItemList, ListContainer } from "../../styles/List";
+import { CitySelector, ItemList, ListContainer } from "../../styles/List";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -12,6 +12,7 @@ export default function Home() {
   const [restaurants, setRestaurants] = useState<IStores[]>([]);
   const [filterBy, setFilterBy] = useState("");
   const [loading, setLoading] = useState(true);
+  const [citySelected, setCitySelected] = useState("");
 
   const router = useRouter();
   const { category } = router.query;
@@ -20,10 +21,10 @@ export default function Home() {
     if (router.isReady) {
       loadData();
     }
-  }, [router.isReady]);
+  }, [router.isReady, citySelected]);
 
   const loadData = async () => {
-    const result = await listStoreByCategoryController(`${category}`);
+    const result = await listStoreByCategoryController(`${category}`, citySelected);
     setRestaurants(result);
     setLoading(false);
   };
@@ -60,6 +61,22 @@ export default function Home() {
           width={88}
           className="logo-icon"
         />
+         <CitySelector>
+          <select
+            name="cars"
+            id="cars"
+            value={citySelected}
+            onChange={(e) => setCitySelected(e.target.value)}
+          >
+            <option value="" disabled>
+              Escolha sua Cidade
+            </option>
+            <option value="jundiai">Jundiaí</option>
+            <option value="varzeapta">Várzea Paulista</option>
+            <option value="campolimpopta">Campo Limpo Paulista</option>
+          </select>
+        </CitySelector>
+
         <div className="search-bar">
           <Image
             src={"/icons/question-mark.svg"}
