@@ -33,6 +33,10 @@ export default function Signup() {
     if(user.birthdate === "") {
       delete user.birthdate;
     }
+
+    if(user.gender === "") {
+      delete user.gender;
+    }
     const result = await createUserController(user);
 
     if (result.status === "success") {
@@ -111,11 +115,12 @@ export default function Signup() {
             {errors.city && <p role="alert">{`${errors.city?.message}`}</p>}
           </div>
           <div className="input-group">
-            <span>Gênero</span>
+            <span>Gênero (Opcional)</span>
             <select
               id="citys"
-              {...register("gender", { required: "Sexo é Obrigatório" })}
+              {...register("gender")}
             >
+              <option value="" disabled selected>Gênero</option>
               <option value={"masculino"}>Masculino</option>
               <option value={"feminino"}>Feminino</option>
               <option value={"outro"}>Outro</option>
