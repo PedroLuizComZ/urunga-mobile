@@ -26,28 +26,14 @@ import StarImage from "../../public/images/star.png";
 import StarFullImage from "../../public/images/star-full.png";
 import { calcRating } from "../../utils/calcRating";
 import { getUserProfileController } from "../../controllers/Auth.controller";
+import { getMobileDetect } from "../../utils/getMobileDetect";
 
-const getMobileDetect = (userAgent: NavigatorID['userAgent']) => {
-  const isAndroid = () => Boolean(userAgent.match(/Android/i))
-  const isIos = () => Boolean(userAgent.match(/iPhone|iPad|iPod/i))
-  const isOpera = () => Boolean(userAgent.match(/Opera Mini/i))
-  const isWindows = () => Boolean(userAgent.match(/IEMobile/i))
-  const isSSR = () => Boolean(userAgent.match(/SSR/i))
-  const isMobile = () => Boolean(isAndroid() || isIos() || isOpera() || isWindows())
-  const isDesktop = () => Boolean(!isMobile() && !isSSR())
-  return {
-    isMobile,
-    isDesktop,
-    isAndroid,
-    isIos,
-    isSSR,
-  }
-}
 const useMobileDetect = () => {
-  useEffect(() => {}, [])
-  const userAgent = typeof navigator === 'undefined' ? 'SSR' : navigator.userAgent
-  return getMobileDetect(userAgent)
-}
+  useEffect(() => {}, []);
+  const userAgent =
+    typeof navigator === "undefined" ? "SSR" : navigator.userAgent;
+  return getMobileDetect(userAgent);
+};
 
 export default function RestaurantDetail() {
   const router = useRouter();
@@ -56,7 +42,7 @@ export default function RestaurantDetail() {
   const [startModal, setStartModal] = useState(false);
   const [hasValidSubscription, setHasValidSubscription] = useState(false);
 
-  const currentDevice = useMobileDetect()
+  const currentDevice = useMobileDetect();
 
   const canvasRef = useRef<any>(null);
   const textareaRef = useRef<any>(null);
@@ -135,6 +121,11 @@ export default function RestaurantDetail() {
 
     console.log(result);
   };
+
+  
+  const navigateToPayment = async () => {
+    router.push(`/ios-payment`);
+  }
 
   const createSubscription = async () => {
     const parsedToken = parseJwt(`${token}`);
@@ -300,10 +291,16 @@ export default function RestaurantDetail() {
             )}
           </InformationContainer>
           <QrCodeContainer>
-            {hasValidSubscription || currentDevice.isIos() ? (
+            {hasValidSubscription ? (
               <button onClick={handleClickQrCode}>Gerar Cupom</button>
             ) : (
-              <button onClick={createSubscription}>Assinar</button>
+              <>
+                {currentDevice.isIos() && currentDevice.isMobile() ? (
+                  <button onClick={navigateToPayment}>Assinar</button>
+                ) : (
+                  <button onClick={createSubscription}>Assinar</button>
+                )}
+              </>
             )}
           </QrCodeContainer>
           <Modal isOpen={modal} toggle={toggle} centered>
