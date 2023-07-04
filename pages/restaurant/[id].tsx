@@ -90,6 +90,11 @@ export default function RestaurantDetail() {
 
   const checkSubscription = async () => {
     let jwtToken: any = Cookies.get("token");
+    let iosChecker: any = Cookies.get("ios-checker");
+
+    if (iosChecker && iosChecker === "Urunga") {
+      return setHasValidSubscription(true);
+    }
 
     const parsedJwt = await parseJwt(jwtToken);
 
@@ -122,10 +127,9 @@ export default function RestaurantDetail() {
     console.log(result);
   };
 
-  
   const navigateToPayment = async () => {
     router.push(`/ios-payment`);
-  }
+  };
 
   const createSubscription = async () => {
     const parsedToken = parseJwt(`${token}`);

@@ -10,6 +10,25 @@ export const ListContainer = styled.div`
   margin: auto;
   padding: 15px;
 
+  button {
+    background: var(--primary-color);
+    border-radius: 10px;
+    width: 100%;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 17px;
+    line-height: 23px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #ffffff;
+    border: 0;
+    justify-content: center;
+    height: 50px;
+    cursor: pointer;
+    margin-top: 100px;
+  }
+
   .back-icon {
     position: absolute;
     top: 35px;
