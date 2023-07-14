@@ -90,12 +90,7 @@ export default function RestaurantDetail() {
 
   const checkSubscription = async () => {
     let jwtToken: any = Cookies.get("token");
-    let iosChecker: any = Cookies.get("ios-checker");
-
-    if (iosChecker && iosChecker === "Urunga") {
-      return setHasValidSubscription(true);
-    }
-
+  
     const parsedJwt = await parseJwt(jwtToken);
 
     const userProfile = await getUserProfileController(parsedJwt.data._id);
@@ -125,10 +120,6 @@ export default function RestaurantDetail() {
     const result = await createRatingController(`${id}`, payload);
 
     console.log(result);
-  };
-
-  const navigateToPayment = async () => {
-    router.push(`/ios-payment`);
   };
 
   const createSubscription = async () => {
@@ -298,13 +289,7 @@ export default function RestaurantDetail() {
             {hasValidSubscription ? (
               <button onClick={handleClickQrCode}>Gerar Cupom</button>
             ) : (
-              <>
-                {currentDevice.isIos() && currentDevice.isMobile() ? (
-                  <button onClick={navigateToPayment}>Assinar</button>
-                ) : (
-                  <button onClick={createSubscription}>Assinar</button>
-                )}
-              </>
+               <button onClick={createSubscription}>Assinar</button>
             )}
           </QrCodeContainer>
           <Modal isOpen={modal} toggle={toggle} centered>
