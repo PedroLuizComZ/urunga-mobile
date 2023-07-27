@@ -15,9 +15,11 @@ export default function Home() {
   const router = useRouter();
 
   const [modal, setModal] = useState(false);
+  const [modalSubscription, setModalSubscription] = useState(false);
   const [hasSubscription, setHasSubscription] = useState(false);
   const [subscriptionId, setSubscriptionId] = useState("");
   const toggle = () => setModal(!modal);
+  const toggleSubscription = () => setModalSubscription(!modalSubscription);
 
   const handleLogout = () => {
     Cookies.remove("token");
@@ -47,11 +49,18 @@ export default function Home() {
   }
 
   const  cancelSubscription = async () => {
-    const deleted = await stripe.subscriptions.cancel(subscriptionId);
+    try {
+      const deleted = await stripe.subscriptions.cancel(subscriptionId);
 
-    if (deleted && deleted.status === "canceled") {
-      alert("Assinatura cancelada com sucesso.")
+      if (deleted && deleted.status === "canceled") {
+        alert("Assinatura cancelada com sucesso.")
+        setModalSubscription(false);
+      }
+    } catch (error) {
+      console.log(error);
+      alert("Erro ao cancelar assinatura, entre em contato com o suporte.")
     }
+    
   }
 
   return (
@@ -74,7 +83,7 @@ export default function Home() {
 
         <p onClick={toggle}>Excluir conta</p>
 
-        { hasSubscription && <p onClick={cancelSubscription}>Cancelar Assinatura</p> }
+        { hasSubscription && <p onClick={toggleSubscription}>Cancelar Assinatura</p> }
 
         <button type="button" onClick={handleLogout}>
           Sair
@@ -94,6 +103,25 @@ export default function Home() {
             </button>
 
             <button type="button" onClick={toggle}>
+              Não, voltar
+            </button>
+          </ModalContainer>
+        </ModalBody>
+      </Modal>
+      <Modal isOpen={modalSubscription} toggle={toggleSubscription} centered>
+        <ModalBody>
+          <ModalContainer>
+            <h2>Tem certeza de que deseja cancelar sua assinatura?</h2>
+
+            <button
+              type="button"
+              className="delete"
+              onClick={cancelSubscription}
+            >
+              Sim, Cancelar
+            </button>
+
+            <button type="button" onClick={toggleSubscription}>
               Não, voltar
             </button>
           </ModalContainer>
