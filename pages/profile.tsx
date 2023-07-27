@@ -4,14 +4,19 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import { Modal, ModalBody } from "reactstrap";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { parseJwt } from "../utils/parseJwt";
 import { deleteAccountController } from "../controllers/Auth.controller";
+import { checkSubscription } from "../utils/checkSubscription";
+const stripe = require("stripe")(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY);
+
 
 export default function Home() {
   const router = useRouter();
 
   const [modal, setModal] = useState(false);
+  const [hasSubscription, setHasSubscription] = useState(false);
+  const [subscriptionId, setSubscriptionId] = useState("");
   const toggle = () => setModal(!modal);
 
   const handleLogout = () => {
@@ -27,6 +32,27 @@ export default function Home() {
     await deleteAccountController(`${parsedToken.data._id}`);
     handleLogout();
   };
+
+  useEffect(() => {
+    fetchSubscription()
+  })
+
+  const  fetchSubscription = async () => {
+    const subscription = await checkSubscription()
+
+    if (subscription && subscription.status === "complete") {
+      setHasSubscription(true);
+      setSubscriptionId(subscription.subscription)
+    }
+  }
+
+  const  cancelSubscription = async () => {
+    const deleted = await stripe.subscriptions.cancel(subscriptionId);
+
+    if (deleted && deleted.status === "canceled") {
+      alert("Assinatura cancelada com sucesso.")
+    }
+  }
 
   return (
     <>
@@ -47,6 +73,8 @@ export default function Home() {
         <h2>Perfil</h2>
 
         <p onClick={toggle}>Excluir conta</p>
+
+        { hasSubscription && <p onClick={cancelSubscription}>Cancelar Assinatura</p> }
 
         <button type="button" onClick={handleLogout}>
           Sair
