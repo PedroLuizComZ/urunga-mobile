@@ -10,7 +10,6 @@ import { deleteAccountController } from "../controllers/Auth.controller";
 import { checkSubscription } from "../utils/checkSubscription";
 const stripe = require("stripe")(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY);
 
-
 export default function Home() {
   const router = useRouter();
 
@@ -28,6 +27,30 @@ export default function Home() {
     }, 300);
   };
 
+  const handleSubscriptionClick = async () => {
+    try {
+      const token = Cookies.get("token");
+      const parsedToken = parseJwt(`${token}`);
+
+      const customer = await stripe.customers.search({
+        query: `email:\'${parsedToken.data.email}\'`,
+      });
+
+      if (customer.data.length > 0) {
+        const portalLink = await stripe.billingPortal.sessions.create({
+          customer: customer.data[0].id,
+          return_url: "https://urunga-mobile.vercel.app/",
+        });
+        router.push(portalLink.url);
+      } else {
+        alert("Ocorreu um erro, entre em contato com nosso time de suporte.");
+      }
+    } catch (error) {
+      console.log(error);
+      alert("Ocorreu um erro, entre em contato com nosso time de suporte.");
+    }
+  };
+
   const handleDeleteAccount = async () => {
     const token = Cookies.get("token");
     const parsedToken = parseJwt(`${token}`);
@@ -36,32 +59,31 @@ export default function Home() {
   };
 
   useEffect(() => {
-    fetchSubscription()
-  })
+    fetchSubscription();
+  });
 
-  const  fetchSubscription = async () => {
-    const subscription = await checkSubscription()
+  const fetchSubscription = async () => {
+    const subscription = await checkSubscription();
 
     if (subscription && subscription.status === "complete") {
       setHasSubscription(true);
-      setSubscriptionId(subscription.subscription)
+      setSubscriptionId(subscription.subscription);
     }
-  }
+  };
 
-  const  cancelSubscription = async () => {
+  const cancelSubscription = async () => {
     try {
       const deleted = await stripe.subscriptions.cancel(subscriptionId);
 
       if (deleted && deleted.status === "canceled") {
-        alert("Assinatura cancelada com sucesso.")
+        alert("Assinatura cancelada com sucesso.");
         setModalSubscription(false);
       }
     } catch (error) {
       console.log(error);
-      alert("Erro ao cancelar assinatura, entre em contato com o suporte.")
+      alert("Erro ao cancelar assinatura, entre em contato com o suporte.");
     }
-    
-  }
+  };
 
   return (
     <>
@@ -83,7 +105,12 @@ export default function Home() {
 
         <p onClick={toggle}>Excluir conta</p>
 
-        { hasSubscription && <p onClick={toggleSubscription}>Cancelar Assinatura</p> }
+        {hasSubscription && (
+          <p onClick={handleSubscriptionClick}>Gerenciar Assinatura</p>
+        )}
+        {hasSubscription && (
+          <p onClick={toggleSubscription}>Cancelar Assinatura</p>
+        )}
 
         <button type="button" onClick={handleLogout}>
           Sair
